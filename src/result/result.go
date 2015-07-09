@@ -50,3 +50,7 @@ func Try(closure func()(value interface{}, err error)) Result {
   return NewSuccess(value)
 }
 
+func (result Result) Dematerialize() (value interface{}, err error) {
+  return result.Success, result.Failure
+}
+

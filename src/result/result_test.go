@@ -104,3 +104,22 @@ func testTryWithFailure(t *testing.T) {
   assert.Equal(t, result.Failure, err)
 }
 
+// Test Dematerialize
+
+func TestDematerializeWithSuccess(t *testing.T) {
+  result := NewSuccess(5)
+  value, err := result.Dematerialize()
+
+  assert.Equal(t, value, 5)
+  assert.Nil(t, err)
+}
+
+func TestDematerializeWithFailure(t *testing.T) {
+  err := &errorString{"testing error"}
+  result := NewFailure(err)
+  value, resultantErr := result.Dematerialize()
+
+  assert.Nil(t, value)
+  assert.Equal(t, resultantErr, err)
+}
+
