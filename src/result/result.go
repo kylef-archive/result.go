@@ -23,3 +23,12 @@ func NewSuccess(value interface{}) Result {
 
   return result
 }
+
+func (result Result) Analysis(ifSuccess func(interface{}) Result, ifFailure func(error) Result) Result {
+  if result.Success != nil {
+    return ifSuccess(result.Success)
+  }
+
+  return ifFailure(result.Failure)
+}
+
