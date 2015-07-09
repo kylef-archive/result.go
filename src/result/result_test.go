@@ -15,6 +15,8 @@ func (err *errorString) Error() string {
 }
 
 
+// Test Initialization
+
 func TestFailure(t *testing.T) {
   err := &errorString{"testing error"}
   result := NewFailure(err)
@@ -31,6 +33,8 @@ func TestSuccess(t *testing.T) {
   assert.Nil(t, result.Failure)
 }
 
+
+// Test Analysis
 
 func TestFailureAnalysis(t *testing.T) {
   err := &errorString{"testing error"}
@@ -51,5 +55,25 @@ func TestSuccessAnalysis(t *testing.T) {
 
   assert.Equal(t, resultantResult.Success, 10)
   assert.Nil(t, resultantResult.Failure)
+}
+
+
+// Test FlatMap
+
+func TestFlatMapOnSuccessReturnsNewValue(t *testing.T) {
+  result := NewSuccess(5)
+  resultantResult := result.FlatMap(func(value interface{}) Result { return NewSuccess(value.(int) * 2) })
+
+  assert.Equal(t, resultantResult.Success, 10)
+  assert.Nil(t, resultantResult.Failure)
+}
+
+func TestFlatMapOnFailureReturnsFailure(t *testing.T) {
+  err := &errorString{"testing error"}
+  result := NewFailure(err)
+  resultantResult := result.FlatMap(func(value interface{}) Result { return NewSuccess(value.(int) * 2) })
+
+  assert.Equal(t, resultantResult.Failure, err)
+  assert.Nil(t, resultantResult.Success)
 }
 

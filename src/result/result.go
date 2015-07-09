@@ -32,3 +32,11 @@ func (result Result) Analysis(ifSuccess func(interface{}) Result, ifFailure func
   return ifFailure(result.Failure)
 }
 
+func (result Result) FlatMap(transform func(interface{}) Result) Result {
+  if result.Success != nil {
+    return transform(result.Success)
+  }
+
+  return result
+}
+
