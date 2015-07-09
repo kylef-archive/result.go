@@ -40,3 +40,13 @@ func (result Result) FlatMap(transform func(interface{}) Result) Result {
   return result
 }
 
+func Try(closure func()(value interface{}, err error)) Result {
+  value, err := closure()
+
+  if err != nil {
+    return NewFailure(err)
+  }
+
+  return NewSuccess(value)
+}
+
