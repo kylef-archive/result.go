@@ -34,6 +34,29 @@ func TestSuccess(t *testing.T) {
   assert.Nil(t, result.Failure)
 }
 
+func TestNewResultWithSuccess(t *testing.T) {
+  example := func() (value interface{}, err error) {
+    return 5, nil
+  }
+
+  result := NewResult(example())
+
+  assert.Nil(t, result.Failure)
+  assert.Equal(t, result.Success, 5)
+}
+
+func testNewResultWithFailure(t *testing.T) {
+  err := &errorString{"testing error"}
+
+  example := func() (value interface{}, err error) {
+    return nil, err
+  }
+
+  result := NewResult(example())
+
+  assert.Nil(t, result.Success)
+  assert.Equal(t, result.Failure, err)
+}
 
 // Test Analysis
 
@@ -76,33 +99,6 @@ func TestFlatMapOnFailureReturnsFailure(t *testing.T) {
 
   assert.Equal(t, resultantResult.Failure, err)
   assert.Nil(t, resultantResult.Success)
-}
-
-
-// Test Try
-
-func TestTryWithSuccess(t *testing.T) {
-  example := func() (value interface{}, err error) {
-    return 5, nil
-  }
-
-  result := Try(example)
-
-  assert.Nil(t, result.Failure)
-  assert.Equal(t, result.Success, 5)
-}
-
-func testTryWithFailure(t *testing.T) {
-  err := &errorString{"testing error"}
-
-  example := func() (value interface{}, err error) {
-    return nil, err
-  }
-
-  result := Try(example)
-
-  assert.Nil(t, result.Success)
-  assert.Equal(t, result.Failure, err)
 }
 
 // Test Dematerialize

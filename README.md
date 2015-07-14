@@ -55,7 +55,7 @@ result := NewSuccess(5)
 result := NewFailure(err)
 ```
 
-#### Using Try to build a result from a tuple
+#### Creating a new result from a value or error
 
 Constructing a result from the "result" of the `Open` standard os function.
 
@@ -64,9 +64,7 @@ func Open(name string) (file *File, err error)
 ```
 
 ```go
-result := Try(func() (value interface{}, err error) {
-    return Open("HelloWorld.txt")
-})
+result := NewResult(Open("HelloWorld.txt"))
 ```
 
 #### Transform a success result into another result

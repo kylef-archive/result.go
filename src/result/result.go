@@ -26,6 +26,14 @@ func NewSuccess(value interface{}) Result {
   return result
 }
 
+// Creates a new result from the given arguments
+func NewResult(value interface{}, err error) Result {
+  if err != nil {
+    return NewFailure(err)
+  }
+  return NewSuccess(value)
+}
+
 // Transform the success value or error of a result
 func (result Result) Analysis(ifSuccess func(interface{}) Result, ifFailure func(error) Result) Result {
   if result.Success != nil {
@@ -42,17 +50,6 @@ func (result Result) FlatMap(transform func(interface{}) Result) Result {
   }
 
   return result
-}
-
-// Create a result from the return values of a function
-func Try(closure func() (value interface{}, err error)) Result {
-  value, err := closure()
-
-  if err != nil {
-    return NewFailure(err)
-  }
-
-  return NewSuccess(value)
 }
 
 // Return the underlying success value and error or a result
