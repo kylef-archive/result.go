@@ -1,10 +1,11 @@
 package result
 
 import (
-  "testing"
+  "errors"
+  "fmt"
   "github.com/stvp/assert"
+  "testing"
 )
-
 
 type errorString struct {
   value string
@@ -123,3 +124,31 @@ func TestDematerializeWithFailure(t *testing.T) {
   assert.Equal(t, resultantErr, err)
 }
 
+func TestCombineAllSuccess(t *testing.T) {
+  results := []Result{NewSuccess("item1"), NewSuccess("item2"), NewSuccess("item3")}
+  transform := func(values ...interface{}) Result {
+    return NewSuccess(values)
+  }
+
+  result := Combine(transform, results...)
+
+  value := result.Success.([]interface{})
+  assert.Equal(t, len(value), 3)
+  for index, item := range value {
+    assert.Equal(t, item, fmt.Sprintf("item%d", index+1))
+  }
+}
+
+func TestCombineWithFailures(t *testing.T) {
+  err1 := errors.New("ow")
+  err2 := errors.New("oww")
+  results := []Result{NewSuccess("item1"), NewFailure(err1), NewFailure(err2)}
+  transform := func(values ...interface{}) Result {
+    return NewSuccess(values)
+  }
+
+  result := Combine(transform, results...)
+
+  assert.Nil(t, result.Success)
+  assert.Equal(t, result.Failure, err1)
+}

@@ -54,3 +54,13 @@ func (result Result) Dematerialize() (value interface{}, err error) {
   return result.Success, result.Failure
 }
 
+func Combine(transform func(...interface{}) Result, results ...Result) Result {
+  values := make([]interface{}, len(results))
+  for index, result := range results {
+    if result.Failure != nil {
+      return result
+    }
+    values[index] = result.Success
+  }
+  return transform(values...)
+}
