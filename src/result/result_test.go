@@ -148,3 +148,35 @@ func TestCombineWithFailures(t *testing.T) {
   assert.Nil(t, result.Success)
   assert.Equal(t, result.Failure, err1)
 }
+
+// Test Recover
+
+func TestRecoverWithSuccess(t *testing.T) {
+  value := NewSuccess(5).Recover(10)
+
+  assert.Equal(t, value, 5)
+}
+
+func TestRecoverWithFailure(t *testing.T) {
+  err := &errorString{"testing error"}
+  value := NewFailure(err).Recover(5)
+
+  assert.Equal(t, value, 5)
+}
+
+func TestRecoverWithWithSuccess(t *testing.T) {
+  recoveredResult := NewSuccess(10)
+  actualResult := NewSuccess(5)
+  result := actualResult.RecoverWith(recoveredResult)
+
+  assert.Equal(t, result, actualResult)
+}
+
+func TestRecoverWithWithFailure(t *testing.T) {
+  err := &errorString{"testing error"}
+  recoveredResult := NewSuccess(10)
+  result := NewFailure(err).RecoverWith(recoveredResult)
+
+  assert.Equal(t, result, recoveredResult)
+}
+

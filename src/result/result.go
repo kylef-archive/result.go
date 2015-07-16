@@ -57,6 +57,24 @@ func (result Result) Dematerialize() (value interface{}, err error) {
   return result.Success, result.Failure
 }
 
+// Returns the .Success value, or the given fallback value if the result is a failure
+func (result Result) Recover(value interface{}) interface{} {
+  if result.Failure != nil {
+    return value
+  }
+
+  return result.Success
+}
+
+// Returns this result if it's a success, or the given result
+func (result Result) RecoverWith(recoveredResult Result) Result {
+  if result.Failure != nil {
+    return recoveredResult
+  }
+
+  return result
+}
+
 // Compose the success values of results if no failures are present, otherwise
 // returns the first failing result
 func Combine(transform func(...interface{}) Result, results ...Result) Result {
